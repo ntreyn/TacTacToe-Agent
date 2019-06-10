@@ -1,1 +1,1 @@
-# TacTacToe-Agent
+# TicTacToe-Agent
