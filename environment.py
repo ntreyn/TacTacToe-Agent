@@ -101,8 +101,8 @@ class ttt_env:
                     if sums[player] == 2:
                         # If friendly streak
                         # Create streak of 3
-                        # +100
-                        reward += 100
+                        # +1000
+                        reward += 1000
                     elif sums[player] == 1:
                         # Else if mixed streak
                         # +0
@@ -110,8 +110,8 @@ class ttt_env:
                     else:
                         # Else if opponent streak
                         # Block streak(s) of 2
-                        # +11 per streak
-                        reward += 11
+                        # +20 per streak
+                        reward += 20
                 else:
                     print("Error: action for full streak")
                     exit()

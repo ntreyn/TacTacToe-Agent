@@ -18,10 +18,12 @@ class learner:
 
         epsilon = 1.0
         max_epsilon = 1.0
-        min_epsilon = 0.01
-        decay_rate = 0.001
+        min_epsilon = 0.3
+        decay_rate = 0.0001
 
         for episode in range(total_episodes):
+
+            print(episode, end='\r')
 
             state = self.env.reset()
             step = 0

@@ -16,6 +16,7 @@ class play_game:
 
     def play(self):
 
+        self.turn = 'X'
         reward = 0
         move_count = 0
         done = False
