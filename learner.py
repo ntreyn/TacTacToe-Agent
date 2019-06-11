@@ -28,6 +28,8 @@ class learner:
             step = 0
             done = False
             turn = 'X'
+            X_reward = 0
+            O_reward = 0
 
             for step in range(max_steps):
 
@@ -49,12 +51,31 @@ class learner:
                 else:
                     action = self.env.sample_action()
 
-                new_state
+                new_state, X_reward, O_reward, done = self.env.step(action, turn)
 
+                if turn == 'X':
+                    reward = X_reward
+                else:
+                    reward = O_reward
 
+                open_tiles = self.env.empty_spaces()
+                open_actions = []
 
+                for tile in open_tiles:
+                    open_actions.append(self.qtable[new_state,tile - 1])
 
+                self.qtable[state, action] = self.qtable[state, action] + learning_rate * (reward + gamma * np.max(open_actions) - self.qtable[state, action])
 
+                state = new_state
 
+                if done:
+                    break
+
+                if turn == 'X':
+                    turn = 'O'
+                else:
+                    turn = 'X'
 
             epsilon = min_epsilon + (max_epsilon - min_epsilon) * np.exp(-decay_rate * episode)
+
+        self.env.reset()
