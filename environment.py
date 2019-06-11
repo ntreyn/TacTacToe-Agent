@@ -5,7 +5,14 @@ import random
 class ttt_env:
     def __init__(self):
         self.num_tiles = 9
+        self.action_size = 9
+        self.state_size = 19683 # 3^9
+        """
+            3^9 does not accuracy describe the number of actually possible states
+            however, for now, the computation for determining states is simpler
+        """
         self.reset()
+        self.generate_states()
 
     def reset(self):
         self.board = [' '] * self.num_tiles
@@ -25,6 +32,7 @@ class ttt_env:
             quit()
 
         self.board[action - 1] = player
+        new_state = self.get_state()
         status = self.check_status()
 
         if status == 'D':
@@ -43,7 +51,7 @@ class ttt_env:
             X_reward = 0
             O_reward = 0
 
-        return X_reward, O_reward, self.done
+        return new_state, X_reward, O_reward, self.done
 
     def render(self):
         print('-------------')
@@ -57,6 +65,50 @@ class ttt_env:
 
     def sample_action(self):
         return random.choice(self.empty_spaces())
+
+    def generate_states(self):
+        state = [' '] * 9
+        self.state_space = {}
+        self.state_count = 0
+        self.recursive_states(state, 0)
+
+    def recursive_states(self, list, ind):
+        if ind == 9:
+            state = tuple(list)
+            self.state_space[state] = self.state_count
+            self.state_count += 1
+            return
+        else:
+            l0 = list
+            l0[ind] = ' '
+            self.recursive_states(list, ind + 1)
+            l1 = list
+            l1[ind] = 'X'
+            self.recursive_states(l1, ind + 1)
+            l2 = list
+            l2[ind] = 'O'
+            self.recursive_states(l2, ind + 1)
+            return
+
+    def get_state(self):
+        """
+            ' ' --> 0
+            'X' --> 1
+            'O' --> 2
+        """
+        """
+        values = list()
+
+        for tile in self.board:
+            if tile == ' ':
+                values.append(0)
+            elif tile == 'X':
+                values.append(1)
+            elif tile == 'O':
+                values.append(2)
+        """
+        return self.state_space[tuple(self.board)]
+
 
     def check_status(self):
         # Check for winner

@@ -10,6 +10,7 @@ class play_game:
     def __init__(self):
         self.turn = 'X'
         self.env = ttt_env()
+        print(len(self.env.state_space))
 
     def play(self):
 
@@ -29,7 +30,9 @@ class play_game:
                 action = self.O.turn(self.env)
                 next_turn = 'X'
 
-            X_reward, O_reward, done = self.env.step(action, self.turn)
+            new_state, X_reward, O_reward, done = self.env.step(action, self.turn)
+
+            print(new_state)
 
             if done:
                 break
