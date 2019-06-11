@@ -10,7 +10,6 @@ class play_game:
     def __init__(self):
         self.turn = 'X'
         self.env = ttt_env()
-        print(len(self.env.state_space))
 
     def play(self):
 
@@ -88,17 +87,17 @@ class play_game:
                     mark = input("Choose your mark (X / O): ")
                     if mark == 'X':
                         self.X = human_player(name, mark)
-                        self.O = computer_agent('Alexander', 'O')
+                        self.O = computer_agent('Alexander', 'O', self.env)
                         break
                     elif mark == 'O':
                         self.O = human_player(name, mark)
-                        self.X = computer_agent('Caesar', 'X')
+                        self.X = computer_agent('Caesar', 'X', self.env)
                         break
                     else:
                         print("Invalid mark, please try again")
             elif mode == '3':
-                self.X = computer_agent('Caesar', 'X')
-                self.O = computer_agent('Alexander', 'O')
+                self.X = computer_agent('Caesar', 'X', self.env)
+                self.O = computer_agent('Alexander', 'O', self.env)
                 break
             else:
                 print("Invalid mode, please try again")

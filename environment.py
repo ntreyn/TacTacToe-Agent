@@ -16,8 +16,8 @@ class ttt_env:
 
     def reset(self):
         self.board = [' '] * self.num_tiles
-
         self.done = False
+        return self.get_state()
 
 
     def step(self, action, player):
