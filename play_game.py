@@ -18,15 +18,17 @@ class play_game:
         move_count = 0
 
         while True:
+            move_count += 1
             print("Move", move_count)
             self.env.render()
-            
+
             if self.turn == 'X':
                 action = self.X.turn(self.env)
                 next_turn = 'O'
             elif self.turn == 'O':
                 action = self.O.turn(self.env)
                 next_turn = 'X'
+
             X_reward, O_reward, done = self.env.step(action, self.turn)
 
             if done:

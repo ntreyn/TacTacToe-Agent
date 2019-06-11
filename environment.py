@@ -24,7 +24,6 @@ class ttt_env:
             print("Invalid player:", player)
             quit()
 
-        print(action)
         self.board[action - 1] = player
         status = self.check_status()
 
@@ -48,7 +47,7 @@ class ttt_env:
 
     def render(self):
         print('-------------')
-        for row in range(3):
+        for row in range(0, 9, 3):
             rowString = '| ' + self.board[row] + ' | ' + self.board[row + 1] + ' | ' + self.board[row + 2] + ' |'
             print(rowString)
             print('-------------')

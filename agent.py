@@ -6,7 +6,9 @@ class computer_agent():
         self.mark = m
 
     def turn(self, env):
-        return env.sample_action()
+        move = env.sample_action()
+        print(self.name + " chose " + str(move))
+        return move
 
     def wins(self):
         print(self.name + " wins!")
