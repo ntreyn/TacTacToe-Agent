@@ -28,14 +28,9 @@ class learner:
             step = 0
             done = False
             turn = 'X'
-            X_reward = 0
-            O_reward = 0
+            reward = 0
 
             for step in range(max_steps):
-
-                """
-                    Add turns, update same qtable for both agents
-                """
 
                 exp_exp_tradeoff = random.uniform(0,1)
 
@@ -51,12 +46,7 @@ class learner:
                 else:
                     action = self.env.sample_action()
 
-                new_state, X_reward, O_reward, done = self.env.step(action, turn)
-
-                if turn == 'X':
-                    reward = X_reward
-                else:
-                    reward = O_reward
+                new_state, reward, status, done = self.env.step(action, turn)
 
                 open_tiles = self.env.empty_spaces()
                 open_actions = []
