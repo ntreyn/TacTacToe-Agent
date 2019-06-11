@@ -19,7 +19,7 @@ class computer_agent():
 
         action = np.argmax(open_actions) + 1
 
-        print(self.name + " chose " + str(action))
+        # print(self.name + " chose " + str(action))
         return action
 
     def wins(self):
