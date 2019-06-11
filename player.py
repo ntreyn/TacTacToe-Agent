@@ -5,7 +5,7 @@ class human_player:
         self.name = n
         self.mark = m
 
-    def turn(self, env):
+    def turn(self, state):
         strmove = input(self.name + ", choose your move: ")
         print(self.name + " chose " + strmove)
         return int(strmove)

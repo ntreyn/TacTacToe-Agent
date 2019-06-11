@@ -23,7 +23,7 @@ class ttt_env:
     def __init__(self):
         self.num_tiles = 9
         self.action_size = 9
-        self.state_size = 19683 # 3^9
+        self.state_size = 19683 * 2 # 3^9 * 2
         """
             3^9 does not accuracy describe the number of actually possible states
             however, for now, the computation for determining states is simpler

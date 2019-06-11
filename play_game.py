@@ -5,17 +5,21 @@ import random
 from environment import ttt_env
 from player import human_player
 from agent import computer_agent
+from learner import learner
 
 class play_game:
     def __init__(self):
         self.turn = 'X'
         self.env = ttt_env()
-        print(len(self.env.state_space))
+        self.learner = learner(self.env)
+        self.learner.learn()
 
     def play(self):
 
         reward = 0
         move_count = 0
+        done = False
+        state = self.env.reset()
 
         while True:
             move_count += 1
@@ -23,20 +27,19 @@ class play_game:
             self.env.render()
 
             if self.turn == 'X':
-                action = self.X.turn(self.env)
+                action = self.X.turn(state)
                 next_turn = 'O'
             elif self.turn == 'O':
-                action = self.O.turn(self.env)
+                action = self.O.turn(state)
                 next_turn = 'X'
 
             new_state, reward, status, done = self.env.step(action, self.turn)
-
-            print(reward)
 
             if done:
                 break
 
             # End of turn
+            state = new_state
             self.turn = next_turn
 
         self.env.render()
@@ -87,27 +90,30 @@ class play_game:
                     mark = input("Choose your mark (X / O): ")
                     if mark == 'X':
                         self.X = human_player(name, mark)
-                        self.O = computer_agent('Alexander', 'O', self.env)
+                        self.O = computer_agent('Alexander', 'O', self.env, self.learner)
                         break
                     elif mark == 'O':
                         self.O = human_player(name, mark)
-                        self.X = computer_agent('Caesar', 'X', self.env)
+                        self.X = computer_agent('Caesar', 'X', self.env, self.learner)
                         break
                     else:
                         print("Invalid mark, please try again")
             elif mode == '3':
-                self.X = computer_agent('Caesar', 'X', self.env)
-                self.O = computer_agent('Alexander', 'O', self.env)
+                self.X = computer_agent('Caesar', 'X', self.env, self.learner)
+                self.O = computer_agent('Alexander', 'O', self.env, self.learner)
                 break
             else:
                 print("Invalid mode, please try again")
-
             break
 
 def main():
     game = play_game()
-    game.choose_mode()
-    game.play()
+    while True:
+        game.choose_mode()
+        game.play()
+        temp = input("Would you like to play again? (y/n) ")
+        if temp == 'n':
+            break
 
 if __name__ == "__main__":
     main()

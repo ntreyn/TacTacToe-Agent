@@ -1,9 +1,8 @@
-
+import numpy as np
+import random
 
 class learner:
-    def __init__(self, a1, a2, e):
-        self.agent1 = a1
-        self.agent2 = a2
+    def __init__(self, e):
         self.env = e
 
     def learn(self):
@@ -35,13 +34,14 @@ class learner:
                 exp_exp_tradeoff = random.uniform(0,1)
 
                 if exp_exp_tradeoff > epsilon:
+
                     open_tiles = self.env.empty_spaces()
-                    open_actions = []
+                    open_actions = [-1] * 9
 
                     for tile in open_tiles:
-                        open_actions.append(self.qtable[state,tile - 1])
+                        open_actions[tile - 1] = self.qtable[state,tile - 1]
 
-                    action = np.argmax(open_actions)
+                    action = np.argmax(open_actions) + 1
 
                 else:
                     action = self.env.sample_action()
@@ -49,12 +49,12 @@ class learner:
                 new_state, reward, status, done = self.env.step(action, turn)
 
                 open_tiles = self.env.empty_spaces()
-                open_actions = []
+                open_actions = [0] * 9
 
                 for tile in open_tiles:
-                    open_actions.append(self.qtable[new_state,tile - 1])
+                    open_actions[tile - 1] = self.qtable[state,tile - 1]
 
-                self.qtable[state, action] = self.qtable[state, action] + learning_rate * (reward + gamma * np.max(open_actions) - self.qtable[state, action])
+                self.qtable[state, action - 1] = self.qtable[state, action - 1] + learning_rate * (reward + gamma * np.max(open_actions) - self.qtable[state, action - 1])
 
                 state = new_state
 
