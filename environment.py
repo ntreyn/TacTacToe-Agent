@@ -4,22 +4,6 @@ import random
 
 class ttt_env:
 
-    """
-    1   2   3
-    4   5   6
-    7   8   9
-
-    1: [1,2,3], [1,4,7], [1,5,9]
-    2: [1,2,3], [2,5,8]
-    3: [1,2,3], [3,6,9], [3,5,7]
-    4: [1,4,7], [4,5,6]
-    5: [2,5,8], [4,5,6], [1,5,9], [3,5,7]
-    6: [3,6,9], [4,5,6]
-    7: [1,4,7], [7,8,9], [3,5,7]
-    8: [2,5,8], [7,8,9]
-    9: [3,6,9], [7,8,9], [1,5,9]
-    """
-
     def __init__(self):
         self.num_tiles = 9
         self.action_size = 9
@@ -27,6 +11,7 @@ class ttt_env:
         """
             3^9 does not accuracy describe the number of actually possible states
             however, for now, the computation for determining states is simpler
+            This state space is multiplied by 2 to account for each player
         """
         self.streaks = [ [1,2,3], [1,4,7], [1,5,9], [2,5,8], [3,6,9], [3,5,7], [4,5,6], [7,8,9] ]
         self.generate_states()
@@ -61,20 +46,6 @@ class ttt_env:
 
     def get_reward(self, action, player):
 
-        # Block streak(s) of 1
-        # +1 per streak
-
-        # Block streak(s) of 2
-        # +11 per streak
-
-        # Create streak(s) of 1
-        # +2 per streak
-
-        # Create streak(s) of 2
-        # +5 per streak
-
-        # Create streak of 3
-        # +100
         reward = 0
 
         for streak in self.streaks:

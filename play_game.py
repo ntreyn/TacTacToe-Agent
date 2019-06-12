@@ -27,8 +27,8 @@ class play_game:
 
         while True:
             move_count += 1
-            # print("Move", move_count)
-            # self.env.render()
+            print("Move", move_count)
+            self.env.render()
 
             if self.turn == 'X':
                 action = self.X.turn(state)
@@ -46,18 +46,18 @@ class play_game:
             state = new_state
             self.turn = next_turn
 
-        # self.env.render()
+        self.env.render()
 
-        # print("Gameover")
+        print("Gameover")
         if status == 'X':
             self.X_count += 1
-            # self.X.wins()
+            self.X.wins()
         elif status == 'O':
             self.O_count += 1
-            # self.O.wins()
+            self.O.wins()
         else:
             self.draw_count += 1
-            # print("Draw")
+            print("Draw")
 
         self.env.reset()
 
@@ -115,11 +115,10 @@ class play_game:
 
 def main():
     game = play_game()
+    """
     game.choose_mode()
-
     for n in range(10000):
         game.play()
-
     """
     while True:
         game.choose_mode()
@@ -127,10 +126,10 @@ def main():
         temp = input("Would you like to play again? (y/n) ")
         if temp == 'n':
             break
-    """
-    print("X wins:", game.X_count)
-    print("O wins:", game.O_count)
-    print("Draws:", game.draw_count)
+
+    # print("X wins:", game.X_count)
+    # print("O wins:", game.O_count)
+    # print("Draws:", game.draw_count)
 
 if __name__ == "__main__":
     main()

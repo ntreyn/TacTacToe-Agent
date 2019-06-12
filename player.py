@@ -7,7 +7,7 @@ class human_player:
 
     def turn(self, state):
         strmove = input(self.name + ", choose your move: ")
-        # print(self.name + " chose " + strmove)
+        print(self.name + " chose " + strmove)
         return int(strmove)
 
     def wins(self):
