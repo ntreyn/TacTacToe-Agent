@@ -3,8 +3,7 @@
 import numpy as np
 import random
 from environment import ttt_env
-from player import human_player
-from agent import computer_agent
+from agent import human_player, computer_agent
 from learner import learner
 
 class play_game:
@@ -37,7 +36,7 @@ class play_game:
                 action = self.O.turn(state)
                 next_turn = 'X'
 
-            new_state, reward, status, done = self.env.step(action, self.turn)
+            new_state, reward, status, done = self.env.step(action)
 
             if done:
                 break

@@ -11,7 +11,7 @@ class learner:
 
         self.qtable = np.zeros((state_size, action_size))
 
-        total_episodes = 100000
+        total_episodes = 10000
         max_steps = 10
         learning_rate = 0.7
         gamma = 0.9
@@ -28,7 +28,6 @@ class learner:
             state = self.env.reset()
             step = 0
             done = False
-            turn = 'X'
             reward = 0
 
             for step in range(max_steps):
@@ -41,32 +40,27 @@ class learner:
                     open_actions = [-1] * 9
 
                     for tile in open_tiles:
-                        open_actions[tile - 1] = self.qtable[state,tile - 1]
+                        open_actions[tile] = self.qtable[state,tile]
 
-                    action = np.argmax(open_actions) + 1
+                    action = np.argmax(open_actions)
 
                 else:
                     action = self.env.sample_action()
 
-                new_state, reward, status, done = self.env.step(action, turn)
+                new_state, reward, status, done = self.env.step(action)
 
                 open_tiles = self.env.empty_spaces()
                 open_actions = [0] * 9
 
                 for tile in open_tiles:
-                    open_actions[tile - 1] = self.qtable[state,tile - 1]
+                    open_actions[tile] = self.qtable[state,tile]
 
-                self.qtable[state, action - 1] = self.qtable[state, action - 1] + learning_rate * (reward + gamma * np.max(open_actions) - self.qtable[state, action - 1])
+                self.qtable[state, action] = self.qtable[state, action] + learning_rate * (reward + gamma * np.max(open_actions) - self.qtable[state, action])
 
                 state = new_state
 
                 if done:
                     break
-
-                if turn == 'X':
-                    turn = 'O'
-                else:
-                    turn = 'X'
 
             epsilon = min_epsilon + (max_epsilon - min_epsilon) * np.exp(-decay_rate * episode)
 

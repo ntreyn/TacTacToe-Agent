@@ -20,32 +20,32 @@ class ttt_env:
     def reset(self):
         self.board = [' '] * self.num_tiles
         self.done = False
-        return self.get_state('X')
+        self.player = 'X'
+        return self.get_state()
 
-    def step(self, action, player):
+    def step(self, action):
         if self.done:
             print("Game already over")
             quit()
-        if self.board[action - 1] != ' ':
+        if self.board[action] != ' ':
             print("Invalid action:", action)
             quit()
-        if player != 'X' and player != 'O':
-            print("Invalid player:", player)
-            quit()
 
-        reward = self.get_reward(action, player)
+        reward = self.get_reward(action)
 
-        self.board[action - 1] = player
-        new_state = self.get_state(player)
+        self.board[action] = self.player
+        new_state = self.get_state()
         status = self.check_status()
 
         if status == 'D' or status == 'X' or status == 'O':
             self.done = True
+        else:
+            self.change_turn()
 
         return new_state, reward, status, self.done
 
-    def get_reward(self, action, player):
-
+    def get_reward(self, a):
+        action = a + 1
         reward = 0
 
         for streak in self.streaks:
@@ -57,7 +57,7 @@ class ttt_env:
                     reward += 2
 
                 elif sums[' '] == 2:
-                    if sums[player] == 1:
+                    if sums[self.player] == 1:
                         # If friendly streak
                         # Create streak(s) of 2
                         # +5 per streak
@@ -69,12 +69,12 @@ class ttt_env:
                         reward += 1
 
                 elif sums[' '] == 1:
-                    if sums[player] == 2:
+                    if sums[self.player] == 2:
                         # If friendly streak
                         # Create streak of 3
                         # +1000
                         reward += 1000
-                    elif sums[player] == 1:
+                    elif sums[self.player] == 1:
                         # Else if mixed streak
                         # +0
                         continue
@@ -107,6 +107,12 @@ class ttt_env:
 
         return sums
 
+    def change_turn(self):
+        if self.player == 'X':
+            self.player = 'O'
+        else:
+            self.player = 'X'
+
     def render(self):
         print('-------------')
         for row in range(0, 9, 3):
@@ -115,7 +121,7 @@ class ttt_env:
             print('-------------')
 
     def empty_spaces(self):
-        return [(i + 1) for i, s in enumerate(self.board) if s == ' ']
+        return [i for i, s in enumerate(self.board) if s == ' ']
 
     def sample_action(self):
         return random.choice(self.empty_spaces())
@@ -148,9 +154,8 @@ class ttt_env:
             self.recursive_states(l2, ind + 1)
             return
 
-    def get_state(self, player):
-        return self.state_space[tuple(self.board), player]
-
+    def get_state(self):
+        return self.state_space[tuple(self.board), self.player]
 
     def check_status(self):
         # Check for winner

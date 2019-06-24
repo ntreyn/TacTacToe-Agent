@@ -15,12 +15,26 @@ class computer_agent():
         open_actions = [-1] * 9
 
         for tile in open_tiles:
-            open_actions[tile - 1] = self.learner.qtable[state,tile - 1]
+            open_actions[tile] = self.learner.qtable[state,tile]
 
-        action = np.argmax(open_actions) + 1
+        action = np.argmax(open_actions)
 
         print(self.name + " chose " + str(action))
         return action
+
+    def wins(self):
+        print(self.name + " wins!")
+
+
+class human_player:
+    def __init__(self, n, m):
+        self.name = n
+        self.mark = m
+
+    def turn(self, state):
+        strmove = input(self.name + ", choose your move: ")
+        print(self.name + " chose " + strmove)
+        return int(strmove) - 1
 
     def wins(self):
         print(self.name + " wins!")
