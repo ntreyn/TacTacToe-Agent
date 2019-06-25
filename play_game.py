@@ -4,17 +4,25 @@ import numpy as np
 import random
 from environment import ttt_env
 from agent import human_player, computer_agent
-from learner import learner
+from qlearner import qlearner
 
 class play_game:
     def __init__(self):
         self.turn = 'X'
         self.env = ttt_env()
-        self.learner = learner(self.env)
+        self.learner = qlearner(self.env)
         self.learner.learn()
         self.X_count = 0
         self.O_count = 0
         self.draw_count = 0
+
+    def play_loop(self):
+        while True:
+            self.choose_mode()
+            self.play()
+            temp = input("Would you like to play again? (y/n) ")
+            if temp == 'n':
+                break
 
     def play(self):
 
@@ -114,18 +122,13 @@ class play_game:
 
 def main():
     game = play_game()
+    game.play_loop()
     """
     game.choose_mode()
     for n in range(10000):
         game.play()
     """
-    while True:
-        game.choose_mode()
-        game.play()
-        temp = input("Would you like to play again? (y/n) ")
-        if temp == 'n':
-            break
-
+    
     # print("X wins:", game.X_count)
     # print("O wins:", game.O_count)
     # print("Draws:", game.draw_count)

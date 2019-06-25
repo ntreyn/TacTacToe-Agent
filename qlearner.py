@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-class learner:
+class qlearner:
     def __init__(self, e):
         self.env = e
 
@@ -11,7 +11,7 @@ class learner:
 
         self.qtable = np.zeros((state_size, action_size))
 
-        total_episodes = 10000
+        total_episodes = 100000
         max_steps = 10
         learning_rate = 0.7
         gamma = 0.9
