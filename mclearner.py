@@ -17,20 +17,21 @@ class mclearner:
         returns_sum = defaultdict(float)
         returns_count = defaultdict(float)
 
-        total_episodes = 100000
+        total_episodes = 1000000
         max_steps = 10
         gamma = 0.9
 
         epsilon = 1.0
         max_epsilon = 1.0
-        min_epsilon = 0.05
-        decay_rate = 0.001
+        min_epsilon = 0.1
+        decay_rate = 0.0001
 
         for episode in range(total_episodes):
 
             print(episode, end='\r')
             state = self.env.reset()
             episode_results = []
+            step = 0
 
             for step in range(max_steps):
 
@@ -70,4 +71,5 @@ class mclearner:
             epsilon = min_epsilon + (max_epsilon - min_epsilon) * np.exp(-decay_rate * episode)
 
         self.env.reset()
+        print()
         

@@ -11,14 +11,14 @@ class qlearner:
 
         self.qtable = np.zeros((state_size, action_size))
 
-        total_episodes = 100000
+        total_episodes = 1000000
         max_steps = 10
         learning_rate = 0.7
         gamma = 0.9
 
         epsilon = 1.0
         max_epsilon = 1.0
-        min_epsilon = 0.3
+        min_epsilon = 0.1
         decay_rate = 0.0001
 
         for episode in range(total_episodes):
@@ -65,3 +65,4 @@ class qlearner:
             epsilon = min_epsilon + (max_epsilon - min_epsilon) * np.exp(-decay_rate * episode)
 
         self.env.reset()
+        print()

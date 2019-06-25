@@ -43,8 +43,19 @@ def core_argparser():
     )
     argparser.add_argument(
         '-l', '--learning_rate', 
-        type=float, default=0.0001, 
+        type=float, 
+        default=0.0001, 
         help='learning rate (default: 0.0001'
+    )
+    argparser.add_argument(
+        '-r', '--render', 
+        action='store_true',
+        help='render game'
+    )
+    argparser.add_argument(
+        '--im_reward', 
+        action='store_true',
+        help='intermediate rewards'
     )
 
     return argparser

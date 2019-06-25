@@ -6,13 +6,13 @@ from parameters import core_argparser, MODEL_MAP
 from environment import ttt_env
 
 class rl_main():
-    def __init__(self, e, a1, a2):
+    def __init__(self, e, a1, args):
         self.env = e
         self.agent1 = a1
-        self.agent2 = a2
         self.mc_count = 0
         self.q_count = 0
         self.draw_count = 0
+        self.args = args
 
     def choose_move(self, agent, state):
         open_tiles = self.env.empty_spaces()
@@ -25,6 +25,10 @@ class rl_main():
         return action
 
     def test_vs_q(self, num_games):
+
+        q_agent = MODEL_MAP['qlearn'](self.env)
+        q_agent.learn()
+        self.agent2 = q_agent
 
         for n in range(num_games):
 
@@ -60,6 +64,9 @@ class rl_main():
         state = self.env.reset()
 
         while True:
+            
+            if self.args.render:
+                self.env.render()
 
             if turn == 'X':
                 action = self.choose_move(self.X, state)
@@ -76,7 +83,9 @@ class rl_main():
             # End of turn
             state = new_state
             turn = next_turn
-
+        if self.args.render:
+            self.env.render()
+            
         self.env.reset()
 
         return status
@@ -84,15 +93,13 @@ class rl_main():
 def main(args):
 
     print("Model: {}".format(args.model))
+    print("IM Reward: {}".format(args.im_reward))
 
-    env = ttt_env()
+    env = ttt_env(args.im_reward)
     agent = MODEL_MAP[args.model](env)
     agent.learn()
-    
-    q_agent = MODEL_MAP['qlearn'](env)
-    q_agent.learn()
 
-    tester = rl_main(env, agent, q_agent)
+    tester = rl_main(env, agent, args)
     tester.test_vs_q(args.num_games)
 
 if __name__ == '__main__':

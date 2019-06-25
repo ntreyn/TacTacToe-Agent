@@ -9,7 +9,7 @@ from qlearner import qlearner
 class play_game:
     def __init__(self):
         self.turn = 'X'
-        self.env = ttt_env()
+        self.env = ttt_env(False)
         self.learner = qlearner(self.env)
         self.learner.learn()
         self.X_count = 0

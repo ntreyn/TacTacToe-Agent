@@ -4,10 +4,11 @@ import random
 
 class ttt_env:
 
-    def __init__(self):
+    def __init__(self, im):
         self.num_tiles = 9
         self.action_size = 9
         self.state_size = 19683 * 2 # 3^9 * 2
+        self.im = im
         """
             3^9 does not accuracy describe the number of actually possible states
             however, for now, the computation for determining states is simpler
@@ -31,7 +32,10 @@ class ttt_env:
             print("Invalid action:", action)
             quit()
 
-        reward = self.get_reward(action)
+        if self.im:
+            reward = self.get_intermediate_reward(action)
+        else:
+            reward = 0
 
         self.board[action] = self.player
         new_state = self.get_state()
@@ -39,12 +43,17 @@ class ttt_env:
 
         if status == 'D' or status == 'X' or status == 'O':
             self.done = True
+            if not self.im:
+                if status == 'D':
+                    reward = 0
+                elif status == self.player:
+                    reward = 100
         else:
             self.change_turn()
 
         return new_state, reward, status, self.done
 
-    def get_reward(self, a):
+    def get_intermediate_reward(self, a):
         action = a + 1
         reward = 0
 
@@ -54,6 +63,7 @@ class ttt_env:
                 if sums[' '] == 3:
                     # Create streak(s) of 1
                     # +2 per streak
+                    # continue
                     reward += 2
 
                 elif sums[' '] == 2:
@@ -61,11 +71,13 @@ class ttt_env:
                         # If friendly streak
                         # Create streak(s) of 2
                         # +5 per streak
+                        # continue
                         reward += 5
                     else:
                         # Else
                         # Block streak(s) of 1
                         # +1 per streak
+                        # continue
                         reward += 1
 
                 elif sums[' '] == 1:
@@ -73,6 +85,7 @@ class ttt_env:
                         # If friendly streak
                         # Create streak of 3
                         # +1000
+                        # reward += 1
                         reward += 1000
                     elif sums[self.player] == 1:
                         # Else if mixed streak
@@ -82,6 +95,7 @@ class ttt_env:
                         # Else if opponent streak
                         # Block streak(s) of 2
                         # +20 per streak
+                        # continue
                         reward += 20
                 else:
                     print("Error: action for full streak")
