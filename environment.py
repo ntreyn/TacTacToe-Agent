@@ -28,9 +28,20 @@ class ttt_env:
         if self.done:
             print("Game already over")
             quit()
+        """
         if self.board[action] != ' ':
             print("Invalid action:", action)
             quit()
+
+        """
+        status = 'P'
+
+        legal_actions = self.empty_spaces()
+        if action not in legal_actions:
+            new_state = self.get_state()
+            reward = -1000
+            return new_state, reward, status, self.done
+        
 
         if self.im:
             reward = self.get_intermediate_reward(action)
@@ -145,6 +156,7 @@ class ttt_env:
         self.state_space = {}
         self.state_count = 0
         self.recursive_states(state, 0)
+        self.reverse_state_space = {v: k for k, v in self.state_space.items()}
 
     def recursive_states(self, list, ind):
         if ind == 9:

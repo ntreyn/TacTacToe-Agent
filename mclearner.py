@@ -4,10 +4,10 @@ import random
 from collections import defaultdict
 
 class mclearner:
-    def __init__(self, e):
+    def __init__(self, e, args):
         self.env = e
 
-    def learn(self):
+    def train(self):
         
         state_size = self.env.state_size
         action_size = self.env.action_size
@@ -17,34 +17,30 @@ class mclearner:
         returns_sum = defaultdict(float)
         returns_count = defaultdict(float)
 
-        total_episodes = 1000000
+        total_episodes = 500000
         max_steps = 10
         gamma = 0.9
 
         epsilon = 1.0
         max_epsilon = 1.0
         min_epsilon = 0.1
-        decay_rate = 0.0001
+        decay_rate = 0.00001
 
         for episode in range(total_episodes):
 
-            print(episode, end='\r')
+            print(episode, epsilon, end='\r')
+            # print(epsilon, end='\r')
             state = self.env.reset()
             episode_results = []
             step = 0
+            status = 'P'
 
             for step in range(max_steps):
 
                 exp_exp_tradeoff = random.uniform(0,1)
 
                 if exp_exp_tradeoff > epsilon:
-                    open_tiles = self.env.empty_spaces()
-                    open_actions = [-1] * 9
-
-                    for tile in open_tiles:
-                        open_actions[tile] = self.qtable[state,tile]
-
-                    action = np.argmax(open_actions)
+                    action = self.act(state)
                 else:
                     action = self.env.sample_action()
 
@@ -61,6 +57,10 @@ class mclearner:
             for state, action in sa_in_episode:
                 sa_pair = (state, action)
 
+                reverse_state = self.env.reverse_state_space[state]
+                if reverse_state[1] != status:
+                    continue
+
                 first_idx = next(i for i, x in enumerate(episode_results) if x[0] == state and x[1] == action)
                 G = sum([x[2] * (gamma ** i) for i, x in enumerate(episode_results[first_idx:])])
 
@@ -72,4 +72,14 @@ class mclearner:
 
         self.env.reset()
         print()
+    
+    def act(self, state):
+        open_tiles = self.env.empty_spaces()
+        open_actions = [-1] * 9
+
+        for tile in open_tiles:
+            open_actions[tile] = self.qtable[state,tile]
+
+        action = np.argmax(open_actions)
+        return action
         

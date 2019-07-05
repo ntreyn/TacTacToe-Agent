@@ -5,6 +5,14 @@ import numpy as np
 from parameters import core_argparser, MODEL_MAP
 from environment import ttt_env
 
+class human():
+    def __init__(self, *args):
+        pass
+
+    def act(self, state):
+        strmove = input("Choose your move: ")
+        return int(strmove) - 1
+
 class rl_main():
     def __init__(self, e, a1, args):
         self.env = e
@@ -15,25 +23,40 @@ class rl_main():
         self.args = args
 
     def choose_move(self, agent, state):
-        open_tiles = self.env.empty_spaces()
-        open_actions = [-1] * 9
+        return agent.act(state)
 
-        for tile in open_tiles:
-            open_actions[tile] = agent.qtable[state,tile]
+    def test_vs_human(self, num_games):
+        self.agent2 = human()
 
-        action = np.argmax(open_actions)
-        return action
+        for n in range(num_games):
+            rand = np.random.randint(0, 2)
+
+            if rand == 0:
+                print("Player X: agent")
+                print("Player Y: human")
+                self.X = self.agent1
+                self.O = self.agent2
+                self.play()
+            else:
+                print("Player X: human")
+                print("Player Y: agent")
+                self.X = self.agent2
+                self.O = self.agent1
+                self.play()
 
     def test_vs_q(self, num_games):
 
-        q_agent = MODEL_MAP['qlearn'](self.env)
-        q_agent.learn()
+        q_agent = MODEL_MAP['qlearn'](self.env, None)
+        q_agent.train()
         self.agent2 = q_agent
+        # self.agent1.eval_on()
 
         for n in range(num_games):
 
             rand = np.random.randint(0, 2)
             if rand == 0:
+                print("Player X: MC agent")
+                print("Player Y: Q agent")
                 self.X = self.agent1
                 self.O = self.agent2
                 status = self.play()
@@ -44,6 +67,8 @@ class rl_main():
                 else:
                     self.draw_count += 1
             else:
+                print("Player X: Q agent")
+                print("Player Y: MC agent")
                 self.X = self.agent2
                 self.O = self.agent1
                 status = self.play()
@@ -96,11 +121,12 @@ def main(args):
     print("IM Reward: {}".format(args.im_reward))
 
     env = ttt_env(args.im_reward)
-    agent = MODEL_MAP[args.model](env)
-    agent.learn()
+    agent = MODEL_MAP[args.model](env, args)
+    agent.train()
 
     tester = rl_main(env, agent, args)
-    tester.test_vs_q(args.num_games)
+    tester.test_vs_human(args.num_games)
+    # tester.test_vs_q(args.num_games)
 
 if __name__ == '__main__':
     ARGPARSER = argparse.ArgumentParser(parents=[core_argparser()])

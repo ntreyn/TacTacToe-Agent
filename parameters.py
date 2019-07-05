@@ -3,10 +3,12 @@ import argparse
 
 from qlearner import qlearner
 from mclearner import mclearner
+from dqn import DQN
 
 MODEL_MAP = {
     'qlearn': qlearner,
-    'mclearn': mclearner
+    'mclearn': mclearner,
+    'dqn': DQN
 }
 
 def core_argparser():
@@ -56,6 +58,12 @@ def core_argparser():
         '--im_reward', 
         action='store_true',
         help='intermediate rewards'
+    )
+    argparser.add_argument(
+        '--device',
+        default='cpu',
+        type=str,
+        help='cpu or cuda (default: cpu)'
     )
 
     return argparser
